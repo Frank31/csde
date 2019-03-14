@@ -1,0 +1,70 @@
+---
+title: "Sweden"
+author: "Francisco Rios Casas"
+date: "3/12/2019"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+#Sweden
+
+###A. Introduction
+Sweden is a country in Northern Europe with a population of approximately 10 million people. In its recent history it has undergone many changes from a relatively weak kingdom with many rivals, to a European power with Imperial ambitions, and in the modern era a nation-state with high income, human development, and quality of life. ALthough for the past few centuries, Sweden has maintained an official policy of neutrality from foregin affairs, it has still be heavely ifluenced by the many instances of wars and economic crises in Europe.^1^
+
+
+###B. Life Expectancy in Sweden
+```{r read_data, include=FALSE}
+
+life.expectancy <- read.delim("sweden_2017.txt", sep = " ")
+sweden.life.exp <-life.expectancy[c("Year", "X.8", "X.11", "Total")]
+sweden.life.exp$Female <- sweden.life.exp$X.8
+sweden.life.exp$Male <- sweden.life.exp$X.11
+sweden <-sweden.life.exp[c("Year", "Female", "Male", "Total")]
+
+summary(sweden)
+
+```
+
+```{r plot, echo=FALSE}
+plot(Female ~ Year, data=sweden,
+     main="Life Expectancy in Sweden, 1751-2017",
+     xlab="Year",
+     ylab="Life expectancy",
+     col="dark red",
+     type="l")
+lines(Male ~ Year, data= sweden,
+      col="gray")
+lines(Total ~ Year, data= sweden,
+      col="black")
+legend("topleft",
+       legend = c("Women", "Men", "Total"),
+       col = c("dark red", "gray", "black"),
+       lty = 1,
+       cex = 0.8)
+```
+
+The lowest life expectancy during any time point between 1751 and 2017 was `r min(sweden$Female)` years for women and `r min(sweden$Male)` years for men. 
+
+###C. Population
+```{r, include=FALSE}
+pop2 <- read.csv("pop.csv")
+```
+
+```{r}
+# run regression on female population size and age
+model1 <- lm(Female~Age, data = pop2)
+summary(model1)
+library(knitr)
+test <- summary(model1)
+kable(test$coefficients, caption="Regression Table")
+```
+
+
+###C. Data Sources
+Data for this report was obtained form the Human Mortality Database, a project of the Department of Demography at the University of California, Berkeley (USA) and at the Max Planck Institute for Demographic Research (MPIDR) in Rostock (Germany). Demographic information for various countries are available for non-commercial use. For further information on where data sources came from see the Human Mortality Database: Sweden Data Sources Page at <https://www.mortality.org/hmd/SWE/DOCS/ref.pdf>.
+
+
+###D. References
+1. "Sweden" Wikipedia. <https://en.wikipedia.org/wiki/Sweden>
+2. Human Mortality Database. (<https://mortality.org>)
